@@ -1,0 +1,7 @@
+project_id = "tbilfcsemnqpukrzxnqc"
+
+[functions.validate-whatsapp]
+verify_jwt = true
+
+[functions.get-subscription-info]
+verify_jwt = true
