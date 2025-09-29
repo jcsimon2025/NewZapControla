@@ -14,20 +14,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useCategories, Category } from '@/hooks/useCategories';
+import { Category } from '@/hooks/useCategories';
 
 interface CategoriesListProps {
   categories: Category[];
   onEdit: (category: Category) => void;
+  onDelete: (id: string) => void;
 }
 
-export function CategoriesList({ categories, onEdit }: CategoriesListProps) {
-  const { deleteCategory } = useCategories();
-
-  function handleDelete(category: Category) {
-    deleteCategory(category.id);
-  }
-
+export function CategoriesList({ categories, onEdit, onDelete }: CategoriesListProps) {
   if (categories.length === 0) {
     return (
       <Card>
@@ -69,10 +64,10 @@ export function CategoriesList({ categories, onEdit }: CategoriesListProps) {
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
-                
+
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(category)}>
+                    <Button variant="ghost" size="icon">
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
                   </AlertDialogTrigger>
@@ -87,7 +82,7 @@ export function CategoriesList({ categories, onEdit }: CategoriesListProps) {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => deleteCategory(category.id)}
+                        onClick={() => onDelete(category.id)}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       >
                         Excluir

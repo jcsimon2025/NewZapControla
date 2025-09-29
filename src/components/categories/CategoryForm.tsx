@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,17 +10,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useCategories, Category } from '@/hooks/useCategories';
+import { Category } from '@/hooks/useCategories';
 
 interface CategoryFormProps {
   category?: Category | null;
   onClose: () => void;
+  onCreate: (newCategory: { nome: string; tags?: string }) => Promise<void> | void;
+  onUpdate: (params: { id: string; updates: { nome: string; tags?: string } }) => Promise<void> | void;
+  isProcessing?: boolean;
 }
 
-export function CategoryForm({ category, onClose }: CategoryFormProps) {
+export function CategoryForm({
+  category,
+  onClose,
+  onCreate,
+  onUpdate,
+  isProcessing = false,
+}: CategoryFormProps) {
   const [nome, setNome] = useState('');
   const [tags, setTags] = useState('');
-  const { createCategory, updateCategory, isCreating, isUpdating } = useCategories();
 
   useEffect(() => {
     if (category) {
@@ -40,12 +47,12 @@ export function CategoryForm({ category, onClose }: CategoryFormProps) {
 
     try {
       if (category) {
-        updateCategory({
+        await onUpdate({
           id: category.id,
           updates: { nome: nome.trim(), tags: tags.trim() },
         });
       } else {
-        createCategory({
+        await onCreate({
           nome: nome.trim(),
           tags: tags.trim(),
         });
@@ -95,9 +102,9 @@ export function CategoryForm({ category, onClose }: CategoryFormProps) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button 
-              type="submit" 
-              disabled={!nome.trim() || isCreating || isUpdating}
+            <Button
+              type="submit"
+              disabled={!nome.trim() || isProcessing}
             >
               {category ? 'Atualizar' : 'Criar'}
             </Button>

@@ -4,14 +4,20 @@ import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CategoriesList } from '@/components/categories/CategoriesList';
 import { CategoryForm } from '@/components/categories/CategoryForm';
-import { useCategories } from '@/hooks/useCategories';
+import { useCategories, Category } from '@/hooks/useCategories';
 
 export default function Categorias() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
-  const { categories, isLoading } = useCategories();
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const {
+    categories,
+    isLoading,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+  } = useCategories();
 
-  const handleEditCategory = (category: any) => {
+  const handleEditCategory = (category: Category) => {
     setEditingCategory(category);
     setIsFormOpen(true);
   };
@@ -44,15 +50,19 @@ export default function Categorias() {
         </Button>
       </div>
 
-      <CategoriesList 
-        categories={categories} 
+      <CategoriesList
+        categories={categories}
         onEdit={handleEditCategory}
+        onDelete={deleteCategory}
       />
 
       {isFormOpen && (
         <CategoryForm
           category={editingCategory}
           onClose={handleCloseForm}
+          onCreate={createCategory}
+          onUpdate={updateCategory}
+          isProcessing={isLoading}
         />
       )}
     </div>
